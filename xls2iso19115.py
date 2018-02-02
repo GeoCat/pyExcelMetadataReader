@@ -1,7 +1,8 @@
 #/usr/bin/env python3
 #-*- coding: utf-8 -*-
-#TICKET: https://eos.geocat.net/redmine/issues/11874
-__doc__        = ''
+"""Module for conversion from excel sheet o iso 19115"""
+
+
 __title__      = 'Excel to iso 19115 converter'
 __summary__    = """Excel sheet converter to iso 19115. Data table in 'Gegevensverzameling' will be converted to XML stored in an output folder (need to be created first)"""
 __author__     = 'Jorge Samuel Mendes de Jesus'
@@ -9,8 +10,7 @@ __date__       = '18-JAN-2018'
 __version__    = '1.0'
 __email__      = 'jorge.dejesus@geocat.net'
 
-########## INTERNAL PARAMETERS ######################################
-#inputXLS = "POC testdata Metadatregister Rittenstaat.xlsx"
+########## INTERNAL CONTANT  PARAMETERS ##########################
 TEMPLATE_FILE = "iso19115.xml.template"
 SCHEMA_LOCATION = "http://schemas.opengis.net/iso/19139/20060504/gmd/gmd.xsd"
 #List of string and/or numbers that need to be None
@@ -53,6 +53,7 @@ def is_dir(dirname):
 
     
 def main(args):
+    
     INPUT_XLS = args.inputexcel.name 
     args.inputexcel.close() #better not to use the open string
     
@@ -60,8 +61,6 @@ def main(args):
     OUTPUT_FOLDER = args.outdir
 
     xls = pd.ExcelFile(INPUT_XLS)
-    # Now you can list all sheets in the file
-    print("Avalilables sheets: {}".format(str(xls.sheet_names)))
     
     #lets replace NaN with a easy to process string
     dataFrame = pd.read_excel(xls, 'Gegevensverzameling').fillna(value=listNone[0])
@@ -87,7 +86,7 @@ def main(args):
                                               record.get("GEGEVENSVERZAMELING_ID",None))
         print("Processing file:{}".format(fileName))
         
-        xmlRecord = render('iso19115.xml.template', record).encode(encoding='UTF-8')
+        xmlRecord = render(TEMPLATE_FILE, record).encode(encoding='UTF-8')
         xmlDoc = etree.fromstring(xmlRecord)
         
         if SCHEMA_VALIDATION: 

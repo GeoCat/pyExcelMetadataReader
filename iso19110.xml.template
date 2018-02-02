@@ -6,20 +6,21 @@
                          xmlns:xlink="http://www.w3.org/1999/xlink"
                          xmlns:gml="http://www.opengis.net/gml"
                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                         uuid="{% if GEGEVENSDOMEIN_ID is defined %}{{ GEGEVENSDOMEIN_ID }}{% endif %}"
+                         uuid="{% if UUID is defined %}{{ UUID }}{% endif %}"
                          xsi:schemaLocation="http://www.isotc211.org/2005/gfc http://www.isotc211.org/2005/gfc/gfc.xsd">
   <gmx:name>
-      <gco:CharacterString>{% if GEGEVENSDOMEIN_NAAM is defined %}{{ GEGEVENSDOMEIN_NAAM }}{% endif %}</gco:CharacterString> <!-- 1 record from tab "gegevensdomein"-->
-  </gmx:name>
-  {% if GEGEVENS_BIJGEWERKT is defined %}
+      <gco:CharacterString>{% if GEGEVENSDOMEIN_NAAM is defined %}{{ GEGEVENSDOMEIN_NAAM }}{% endif %}
+      </gco:CharacterString>
+  </gmx:name>{% if GEGEVENS_BIJGEWERKT is defined %}
+  <gmx:scope />
+  <gmx:versionNumber />
   <gmx:versionDate>
       <gco:Date>{{ GEGEVENS_BIJGEWERKT }}</gco:Date>
-  </gmx:versionDate>
-  {% endif %}}
+  </gmx:versionDate>{% endif %}
   <gfc:producer>
       <gmd:CI_ResponsibleParty>
          <gmd:individualName>
-            <gco:CharacterString>{% if GEGEVENS_BIJGEWERKT is defined %}{{ GEGEVENS_BIJGEWERKT }}{{% endif %}}</gco:CharacterString>
+            <gco:CharacterString>{% if DATASTEWARD_NAAM is defined %}{{ DATASTEWARD_NAAM }}{% endif %}</gco:CharacterString>
          </gmd:individualName>
          <gmd:organisationName>
             <gco:CharacterString>Provincie Groningen</gco:CharacterString>
@@ -29,106 +30,102 @@
          </gmd:positionName>
          <gmd:contactInfo>
             <gmd:CI_Contact>
-               <gmd:phone>
-               {% if (DATA_STEWARD_TELEFOON is defined) or (DATA_STEWARD_MOBIEL is defined) %}
+               <gmd:phone>{% if (DATASTEWARD_TELEFOON is defined) or (DATASTEWARD_MOBIEL is defined) %}
                   <gmd:CI_Telephone>
-                     <gmd:voice><gco:CharacterString>{% if DATA_STEWARD_TELEFOON is defined %}{{ DATA_STEWARD_TELEFOON }}{% endif %}</gco:CharacterString></gmd:voice>
-                     <gmd:facsimile><gco:CharacterString>{% if DATA_STEWARD_MOBIEL %}{{ DATA_STEWARD_MOBIEL }}{% endif %}</gco:CharacterString></gmd:facsimile>
-                  </gmd:CI_Telephone>
-               {% endif %}    
+                     <gmd:voice><gco:CharacterString>{% if DATASTEWARD_TELEFOON is defined %}{{ DATASTEWARD_TELEFOON }}{% endif %}</gco:CharacterString></gmd:voice>
+                     <gmd:facsimile><gco:CharacterString>{% if DATASTEWARD_MOBIEL %}{{ DATASTEWARD_MOBIEL }}{% endif %}</gco:CharacterString></gmd:facsimile>
+                  </gmd:CI_Telephone>{% endif %}    
                </gmd:phone>
                <gmd:address>
-                  <gmd:CI_Address>
-                   {% if DATASTEWARD_EMAILADRES is defined }}
+                  <gmd:CI_Address>{% if DATASTEWARD_EMAILADRES is defined %}
                      <gmd:electronicMailAddress>
                         <gco:CharacterString>{{ DATASTEWARD_EMAILADRES }}</gco:CharacterString>
-                     </gmd:electronicMailAddress>
-                  {% endif %}
+                     </gmd:electronicMailAddress>{% endif %}
                   </gmd:CI_Address>
                </gmd:address>
             </gmd:CI_Contact>
          </gmd:contactInfo>
          <gmd:role>
-            <gmd:CI_RoleCode codeListValue="pointOfContact" codeList="CI_RoleCode" codeListValue="custodian"/>
+            <gmd:CI_RoleCode codeListValue="pointOfContact" codeList="CI_RoleCode"/>
          </gmd:role>
       </gmd:CI_ResponsibleParty>
   </gfc:producer>
-  <gfc:featureType>
+<gfc:featureType>
       <!-- Maybe only generate features that are complete -->
       <gfc:FC_FeatureType>
          <gfc:typeName>
-            <gco:LocalName>{% if GEGEVENSDOMEIN_NAAM is defined %}{{ GEGEVENSDOMEIN_NAAM }}{{% endif %}}</gco:LocalName>
+            <gco:LocalName>{% if GEGEVENSDOMEIN_NAAM is defined %}{{ GEGEVENSDOMEIN_NAAM }}{% endif %}</gco:LocalName>
          </gfc:typeName>
          <gfc:definition>
-            <gco:CharacterString>{% if OMSCHRIJVING is defined %}}{{ OMSCHRIJVING }}{{% endif %}}</gco:CharacterString>
+            <gco:CharacterString>{% if OMSCHRIJVING is defined %}{{ OMSCHRIJVING }}{% endif %}</gco:CharacterString>
          </gfc:definition>
-          <gfc:code>
-            <gmx:Anchor xlink:href="{% if URI is defined %}}{{ URI }}{{% endif %}}">{{ %if GEGEVENSDOMEIN_ID is defined %}}{{ GEGEVENSDOMEIN_ID }}{{% endif %}}</gmx:Anchor>
-         </gfc:code> <!-- for uri use {{ prefix }}{{ geg-id }}, prefix is in a config file -->
-
-         <!-- now loop over records in tab "Gegevensattribuut" for this "gegevensdomein-id"-->
-         <gfc:carrierOfCharacteristics>
+         <gfc:isAbstract>
+				<gco:Boolean>false</gco:Boolean>
+		</gfc:isAbstract>
+         <gfc:code>
+            <gmx:Anchor xlink:href="{% if URI is defined %}{{ URI }}{% endif %}">{%if GEGEVENSDOMEIN_ID is defined %}{{ GEGEVENSDOMEIN_ID }}{% endif %}</gmx:Anchor>
+         </gfc:code>
+         {% for ATTR in ATTRLIST %}
+         
+			 <gfc:carrierOfCharacteristics>
             <gfc:FC_FeatureAttribute>
                <gfc:featureType/>
                <gfc:memberName>
-                  <gco:LocalName>{% if NAAM is defined %}{{ NAAM }}{{% endif %}</gco:LocalName>
+                  <gco:LocalName>{% if  ATTR.NAAM is defined %}{{ ATTR.NAAM }}{% endif %}</gco:LocalName>
                </gfc:memberName>
                <gfc:definition>
-                  <gco:CharacterString>{% if DEFINITIE is defined %}{{ DEFINITIE }}{% endif %}</gco:CharacterString>
+                  <gco:CharacterString>{% if ATTR.DEFINITIE is defined %}{{ ATTR.DEFINITIE }}{% endif %}</gco:CharacterString>
                </gfc:definition>
                <gfc:cardinality>
                   <gco:Multiplicity>
                      <gco:range>
                         <gco:MultiplicityRange>
                            <gco:lower>
-                              <gco:Integer>{% if MIN_WAARDE is defined %}{{ MIN_WAARDE }}{% endif %}</gco:Integer>
+                              <gco:Integer>{% if ATTR.MIN_WAARDE is defined %}{{ ATTR.MIN_WAARDE }}{% endif %}</gco:Integer>
                            </gco:lower>
                            <gco:upper>
-                               <gco:Integer>{% if MAXWAARD is define %}{{ MAX_WAARDE }}{% endif %}</gco:Integer>
+                               <gco:Integer>{% if ATTR.MAXWAARD is defined %}{{ ATTR.MAX_WAARDE }}{% endif %}</gco:Integer>
                            </gco:upper>
                         </gco:MultiplicityRange>
                      </gco:range>
                   </gco:Multiplicity>
                </gfc:cardinality>
                <gfc:code>
-                  <gmx:Anchor xlink:href="{% if URI is defined %}{{ URI }}{% endif %}">{% if GEGEVENSATTRIBUUT_ID is defined %}{{ GEGEVENSATTRIBUUT_ID }}{% endif %}</gmx:Anchor> 
-                  <!-- for uri use {{ prefix }}{{ geg-id }}, prefix is in a config file -->
+                  <gmx:Anchor xlink:href="{% if ATTR.URI is defined %}{{ ATTR.URI }}{% endif %}">{% if ATTR.GEGEVENSATTRIBUUT_ID is defined %}{{ ATTR.GEGEVENSATTRIBUUT_ID }}{% endif %}</gmx:Anchor>  
                </gfc:code>
                <gfc:valueMeasurementUnit>
-                  <gml:UnitDefinition gml:id="{% if RANDOM is defined %}{{ RANDOM }}{% endif %}">
-                     <gml:description>{% if EENHEID is defined %}{{ EENHEID }}{% endif %}</gml:description>
+                  <gml:UnitDefinition gml:id="{% if ATTR.RANDOM is defined %}{{ ATTR.RANDOM }}{% endif %}">
+                     <gml:description>{% if ATTR.EENHEID is defined %}{{ ATTR.EENHEID }}{% endif %}</gml:description>
                   </gml:UnitDefinition>
                </gfc:valueMeasurementUnit>
                <gfc:valueType>
                   <gco:TypeName>
                      <gco:aName>
-                        <gco:CharacterString>{% if DATATYPE is defined %}{{ DATATYPE }}{% endif %}</gco:CharacterString> <!-- mapping table -->
+                        <gco:CharacterString>{% if ATTR.DATATYPE is defined %}{{ ATTR.DATATYPE }}{% endif %}</gco:CharacterString> <!-- mapping table -->
                      </gco:aName>
                   </gco:TypeName>
                </gfc:valueType>
-               <!-- TODO: Loop over BEREIKhere -->
-               <!-- if {{ BEREIK }} has a list of items (separated by /) then for each item add this snippet -->
+               {% if ATTR.BEREIK is defined %}
+               {% for WORD in ATTR.BEREIK %}
                <gfc:listedValue>
                   <gfc:FC_ListedValue>
                      <gfc:label>
-                        <gco:CharacterString>{{ BEREIK.split('/')[i].trim() }}</gco:CharacterString>
+                        <gco:CharacterString>{{ WORD }}</gco:CharacterString>
                      </gfc:label>
                      <gfc:code>
-                        <gco:CharacterString>{{ BEREIK.split('/')[i].trim() }}</gco:CharacterString>
+                        <gco:CharacterString>{{ WORD }}</gco:CharacterString>
                      </gfc:code>
                      <gfc:definition>
                         <gco:CharacterString/>
                      </gfc:definition>
                   </gfc:FC_ListedValue>
-               </gfc:listedValue>
-              <! --end loop Bereik -->
-
+               </gfc:listedValue> 
+               {% endfor %}
+               {% endif %}  
             </gfc:FC_FeatureAttribute>
-         </gfc:carrierOfCharacteristics>
-         </gfc:FC_FeatureType>
-         <!-- end loop over records in tab "Gegevensattribuut" for this "gegevensdomein-id" -->
-
-      </gfc:FC_FeatureType>
-      
-  </gfc:featureType>
-</gfc:FC_FeatureCatalogue>
+            <!-- end of FeatureAttribute -->
+             </gfc:carrierOfCharacteristics>{% endfor %}
+ </gfc:FC_FeatureType>
+ </gfc:featureType>
+ </gfc:FC_FeatureCatalogue>
+         
