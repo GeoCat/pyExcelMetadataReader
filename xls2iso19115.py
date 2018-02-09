@@ -23,7 +23,7 @@ import os
 from lxml import etree
 import argparse
 
-
+from .config import xlink_href
  
 def render(tpl_path, context):
     path, filename = os.path.split(tpl_path)
@@ -85,6 +85,8 @@ def main(args):
                                               record.get("GEGEVENSDOMEIN_ID",None),
                                               record.get("GEGEVENSVERZAMELING_ID",None))
         print("Processing file:{}".format(fileName))
+        
+        record["XLINK__HREF"] = xlink_href 
         
         xmlRecord = render(TEMPLATE_FILE, record).encode(encoding='UTF-8')
         xmlDoc = etree.fromstring(xmlRecord)
