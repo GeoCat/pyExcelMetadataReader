@@ -26,12 +26,11 @@ import argparse
 from config import xlink_href
  
 def render(tpl_path, context):
+    """Jinja2 render function"""
     path, filename = os.path.split(tpl_path)
     return jinja2.Environment(
         loader=jinja2.FileSystemLoader(path or './')
     ).get_template(filename).render(context)
-
-
 
 
 def fixDate(dict):
