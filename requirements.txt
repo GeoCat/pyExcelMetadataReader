@@ -1,1 +1,4 @@
 openpyxl==2.3.5
+pandas==0.22.0
+jinja2==2.9.6
+xlrd==1.1.0
