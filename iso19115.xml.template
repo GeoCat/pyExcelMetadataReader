@@ -245,16 +245,8 @@
                   <gmd:EX_TemporalExtent>
                      <gmd:extent>
                         <gml:TimePeriod gml:id="tp1">
-                           <gml:begin>{% if STARTDATUM_DATASET is defined %}        
-                              <gml:TimeInstant gml:id="ti1">
-                                 <gml:timePosition>{{ STARTDATUM_DATASET }}</gml:timePosition>
-                              </gml:TimeInstant>{% endif %}
-                           </gml:begin>
-                           <gml:end>{% if STARTDATUM_DATASET is defined %}
-                              <gml:TimeInstant gml:id="ti2">
-                                 <gml:timePosition>{{ EINDDATUM_DATASET }}</gml:timePosition>
-                              </gml:TimeInstant>{% endif %}
-                           </gml:end>
+                          <gml:beginPosition>{% if STARTDATUM_DATASET is defined %}{{ STARTDATUM_DATASET }}T00:00:00{% endif %}</gml:beginPosition>
+                          <gml:endPosition>{% if STARTDATUM_DATASET is defined %}{{ EINDDATUM_DATASET }}T00:00:00{% endif %}</gml:endPosition>
                         </gml:TimePeriod>
                      </gmd:extent>
                   </gmd:EX_TemporalExtent>

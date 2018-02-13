@@ -58,77 +58,77 @@ def main(args):
     OUTPUT_FOLDER = args.outdir
     xls = pd.ExcelFile(INPUT_XLS)
 
-# Now you can list all sheets in the file
-print("Avalilables sheets: {}".format(str(xls.sheet_names)))
+    # Now you can list all sheets in the file
+    print("Available sheets: {}".format(str(xls.sheet_names)))
 
-#lets replace NaN with a easy to process string
-dataFrameAttributes = pd.read_excel(xls, 'Gegevensattribuut').fillna(value=listNone[0])
-dataFrameDataSource = pd.read_excel(xls, 'Gegevensbron').fillna(value=listNone[0])
-dataFrameDataDomain = pd.read_excel(xls, 'Gegevensdomein').fillna(value=listNone[0])
-
-
-#replace items from NoneList 
-[dataFrameAttributes.replace([itemNone], [None],inplace=True) for itemNone in listNone]
-[dataFrameDataSource.replace([itemNone], [None],inplace=True) for itemNone in listNone]
-[dataFrameDataDomain.replace([itemNone], [None],inplace=True) for itemNone in listNone]
+    #lets replace NaN with a easy to process string
+    dataFrameAttributes = pd.read_excel(xls, 'Gegevensattribuut').fillna(value=listNone[0])
+    dataFrameDataSource = pd.read_excel(xls, 'Gegevensbron').fillna(value=listNone[0])
+    dataFrameDataDomain = pd.read_excel(xls, 'Gegevensdomein').fillna(value=listNone[0])
 
 
-for name, group in dataFrameAttributes.groupby('GEGEVENSVERZAMELING_ID'):
-    recordDic={}
-    recordDic["URI"] = os.path.join(uri_prefix,name) #<!-- for uri use {{ prefix }}{{ GEGEVENSVERZAMELING_ID }}, prefix is in a config file --> 
+    #replace items from NoneList 
+    [dataFrameAttributes.replace([itemNone], [None],inplace=True) for itemNone in listNone]
+    [dataFrameDataSource.replace([itemNone], [None],inplace=True) for itemNone in listNone]
+    [dataFrameDataDomain.replace([itemNone], [None],inplace=True) for itemNone in listNone]
 
-    print("Generating XML: for attribute {}".format(name))
-    sourceDataID = group["GEGEVENSBRON_ID"].iat[0]
-    dataDomainID = group["GEGEVENSDOMEIN_ID"].iat[0]
-    dataCollectionID = group["GEGEVENSVERZAMELING_ID"].iat[0]
-    
-    fileName="FC:{}:{}:{}.xml".format(sourceDataID,dataDomainID,dataCollectionID)
-    
-    recordDic["GEGEVENSBRON_ID"] = sourceDataID
-    recordDic["GEGEVENSDOMEIN_ID"] = dataDomainID
-    recordDic["GEGEVENSVERZAMELING_ID"] = dataCollectionID
-    recordDic["UUID"]=fileName[:-3]
-    
-    dataDomainRow = dataFrameDataDomain[dataFrameDataDomain["GEGEVENSDOMEIN_ID"].str.match(dataDomainID)]
-    
-    #easier to inject all dictionary and let the template to decide instead of cheerypickin
-    recordDic.update(dataDomainRow.to_dict(orient="records")[0])
 
-       
-    sourceDataDic=dataFrameDataSource[dataFrameDataSource['GEGEVENSBRON_ID'].str.match(sourceDataID)].to_dict(orient="records")[0]
-    recordDic.update(sourceDataDic)
-    attributeDataFrame=group.drop(["GEGEVENSBRON_ID","GEGEVENSDOMEIN_ID","GEGEVENSVERZAMELING_ID"],1)
-    
-    attributeList=[]
-    for record in attributeDataFrame.iterrows():
-        record = record[1].to_dict()
-        record = {k:v for k, v in record.items() if v is not None}
-        record["URI"] = os.path.join(recordDic["URI"],record["NAAM"])
-        attributeList.append(record)
+    for name, group in dataFrameAttributes.groupby('GEGEVENSVERZAMELING_ID'):
+        recordDic={}
+        recordDic["URI"] = os.path.join(uri_prefix,name) #<!-- for uri use {{ prefix }}{{ GEGEVENSVERZAMELING_ID }}, prefix is in a config file --> 
+
+        print("Generating XML: for attribute {}".format(name))
+        sourceDataID = group["GEGEVENSBRON_ID"].iat[0]
+        dataDomainID = group["GEGEVENSDOMEIN_ID"].iat[0]
+        dataCollectionID = group["GEGEVENSVERZAMELING_ID"].iat[0]
         
-    recordDic["ATTRLIST"]=attributeList    
-  
-    if recordDic.get("BEREIK",None):
-            record["BEREIK"]=record["BEREIK"].split("/")
+        fileName="FC:{}:{}:{}.xml".format(sourceDataID,dataDomainID,dataCollectionID)
+        
+        recordDic["GEGEVENSBRON_ID"] = sourceDataID
+        recordDic["GEGEVENSDOMEIN_ID"] = dataDomainID
+        recordDic["GEGEVENSVERZAMELING_ID"] = dataCollectionID
+        recordDic["UUID"]=fileName[:-3]
+        
+        dataDomainRow = dataFrameDataDomain[dataFrameDataDomain["GEGEVENSDOMEIN_ID"].str.match(dataDomainID)]
+        
+        #easier to inject all dictionary and let the template to decide instead of cheerypickin
+        recordDic.update(dataDomainRow.to_dict(orient="records")[0])
 
-    recordDic = fixDate(recordDic)
-    xmlRecord = render(TEMPLATE_FILE, recordDic).encode(encoding='UTF-8')
-    
-    with open(os.path.join(OUTPUT_FOLDER,fileName),"wb") as f1:
-        f1.write(xmlRecord)
-    
-if __name__ == "__main__":
-    
-    
-    parser = argparse.ArgumentParser(description = __summary__)    
-    #File location
-    parser.add_argument('--excelsheet',dest="inputexcel", type=argparse.FileType('r', encoding='UTF-8'), 
-                        required=False,  default="POC testdata Metadatregister Rittenstaat.xlsx", help="Excel file/path with data")
-    
-    #Directory 
-    parser.add_argument('--outdir',dest="outdir", required=False,  default="./output", 
-                        help="Directory path that will contain the XML", type=is_dir)
-    
-    
-    main(args=parser.parse_args())
-    
+           
+        sourceDataDic=dataFrameDataSource[dataFrameDataSource['GEGEVENSBRON_ID'].str.match(sourceDataID)].to_dict(orient="records")[0]
+        recordDic.update(sourceDataDic)
+        attributeDataFrame=group.drop(["GEGEVENSBRON_ID","GEGEVENSDOMEIN_ID","GEGEVENSVERZAMELING_ID"],1)
+        
+        attributeList=[]
+        for record in attributeDataFrame.iterrows():
+            record = record[1].to_dict()
+            record = {k:v for k, v in record.items() if v is not None}
+            record["URI"] = os.path.join(recordDic["URI"],record["NAAM"])
+            attributeList.append(record)
+            
+        recordDic["ATTRLIST"]=attributeList    
+      
+        if recordDic.get("BEREIK",None):
+                record["BEREIK"]=record["BEREIK"].split("/")
+
+        recordDic = fixDate(recordDic)
+        xmlRecord = render(TEMPLATE_FILE, recordDic).encode(encoding='UTF-8')
+        
+        with open(os.path.join(OUTPUT_FOLDER,fileName),"wb") as f1:
+            f1.write(xmlRecord)
+        
+    if __name__ == "__main__":
+        
+        
+        parser = argparse.ArgumentParser(description = __summary__)    
+        #File location
+        parser.add_argument('--excelsheet',dest="inputexcel", type=argparse.FileType('r', encoding='UTF-8'), 
+                            required=False,  default="POC testdata Metadatregister Rittenstaat.xlsx", help="Excel file/path with data")
+        
+        #Directory 
+        parser.add_argument('--outdir',dest="outdir", required=False,  default="./output", 
+                            help="Directory path that will contain the XML", type=is_dir)
+        
+        
+        main(args=parser.parse_args())
+        
