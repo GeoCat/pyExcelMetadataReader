@@ -24,6 +24,7 @@ import os
 from lxml import etree
 from collections import OrderedDict
 from config import uri_prefix
+import argparse
 
 
 def render(tpl_path, context):
@@ -40,6 +41,15 @@ def delValueNone(dict):
         if v is not None:
             d[k]=v
     return d
+
+def is_dir(dirname):
+    """Checks if a path is an actual directory"""
+    if not os.path.isdir(dirname):
+        msg = "{0} is not a directory".format(dirname)
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return dirname
+
 
 def fixDate(dict):
     """The pandas lib datatime makes a YYYY-MM-DD 00:00 representation, 
@@ -117,18 +127,16 @@ def main(args):
         with open(os.path.join(OUTPUT_FOLDER,fileName),"wb") as f1:
             f1.write(xmlRecord)
         
-    if __name__ == "__main__":
+if __name__ == "__main__":
         
         
-        parser = argparse.ArgumentParser(description = __summary__)    
-        #File location
-        parser.add_argument('--excelsheet',dest="inputexcel", type=argparse.FileType('r', encoding='UTF-8'), 
-                            required=False,  default="POC testdata Metadatregister Rittenstaat.xlsx", help="Excel file/path with data")
+    parser = argparse.ArgumentParser(description = __summary__)    
+    #File location
+    parser.add_argument('--excelsheet',dest="inputexcel", type=argparse.FileType('r', encoding='UTF-8'), 
+                            required=False,  default="POC testdata Metadatregister Rittenstaat.xlsx", help="Excel file/path with data") 
+    #Directory 
+    parser.add_argument('--outdir',dest="outdir", required=False,  default="./output", 
+                            help="Directory path that will contain the XML", type=is_dir) 
         
-        #Directory 
-        parser.add_argument('--outdir',dest="outdir", required=False,  default="./output", 
-                            help="Directory path that will contain the XML", type=is_dir)
-        
-        
-        main(args=parser.parse_args())
+    main(args=parser.parse_args())
         
