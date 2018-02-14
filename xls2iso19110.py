@@ -97,7 +97,7 @@ def main(args):
         recordDic["GEGEVENSBRON_ID"] = sourceDataID
         recordDic["GEGEVENSDOMEIN_ID"] = dataDomainID
         recordDic["GEGEVENSVERZAMELING_ID"] = dataCollectionID
-        recordDic["UUID"]=fileName[:-3]
+        recordDic["UUID"]=fileName[:-4]
         
         dataDomainRow = dataFrameDataDomain[dataFrameDataDomain["GEGEVENSDOMEIN_ID"].str.match(dataDomainID)]
         
