@@ -9,7 +9,7 @@
                          uuid="{% if UUID is defined %}{{ UUID }}{% endif %}"
                          xsi:schemaLocation="http://www.isotc211.org/2005/gfc http://www.isotc211.org/2005/gfc/gfc.xsd">
   <gmx:name>
-      <gco:CharacterString>{% if GEGEVENSDOMEIN_NAAM is defined %}{{ GEGEVENSDOMEIN_NAAM }}{% endif %}
+      <gco:CharacterString>FeatureCatalogus {% if GEGEVENSDOMEIN_NAAM is defined %}{{ GEGEVENSDOMEIN_NAAM }}{% endif %}
       </gco:CharacterString>
   </gmx:name>{% if GEGEVENS_BIJGEWERKT is defined %}
   <gmx:scope />
