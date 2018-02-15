@@ -115,12 +115,24 @@ def main(args):
             record = {k:v for k, v in record.items() if v is not None}
             record["URI"] = os.path.join(recordDic["URI"],record["NAAM"])
             attributeList.append(record)
-            
+        
         recordDic["ATTRLIST"]=attributeList    
-      
-        if recordDic.get("BEREIK",None):
-                record["BEREIK"]=record["BEREIK"].split("/")
+        
+        for index,record in enumerate(recordDic["ATTRLIST"]):
+            # only if we have / otherwise we set it to None to avoid problems in XML
+            
+            if record.get("BEREIK",None):
+                
+                if record["BEREIK"].find("/") > 0:
+                    recordDic["ATTRLIST"][index]["BEREIK"] = recordDic["ATTRLIST"][index]["BEREIK"].split("/")
+                else:
+                    del recordDic["ATTRLIST"][index]["BEREIK"]
 
+            #    recordDic["ATTRLIST"][0]["BEREIK"]
+             #   print("Jumped {}".format(record["BEREIK"]))
+
+        
+        
         recordDic = fixDate(recordDic)
         xmlRecord = render(TEMPLATE_FILE, recordDic).encode(encoding='UTF-8')
         
