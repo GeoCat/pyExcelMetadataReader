@@ -15,7 +15,7 @@
   <gmx:scope />
   <gmx:versionNumber />
   <gmx:versionDate>
-      <gco:Date>{{ GEGEVENS_BIJGEWERKT }}</gco:Date>
+      <gco:DateTime>{{ GEGEVENS_BIJGEWERKT }}T00:00:00</gco:DateTime>
   </gmx:versionDate>{% endif %}
   <gfc:producer>
       <gmd:CI_ResponsibleParty>
