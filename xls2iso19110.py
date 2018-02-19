@@ -75,14 +75,16 @@ def main(args):
     dataFrameAttributes = pd.read_excel(xls, 'Gegevensattribuut').fillna(value=listNone[0])
     dataFrameDataSource = pd.read_excel(xls, 'Gegevensbron').fillna(value=listNone[0])
     dataFrameDataDomain = pd.read_excel(xls, 'Gegevensdomein').fillna(value=listNone[0])
-
+    dataFrameDataCollection = pd.read_excel(xls,'Gegevensverzameling').fillna(value=listNone[0]) 
 
     #replace items from NoneList 
     [dataFrameAttributes.replace([itemNone], [None],inplace=True) for itemNone in listNone]
     [dataFrameDataSource.replace([itemNone], [None],inplace=True) for itemNone in listNone]
     [dataFrameDataDomain.replace([itemNone], [None],inplace=True) for itemNone in listNone]
+    [dataFrameDataCollection.replace([itemNone], [None],inplace=True) for itemNone in listNone]
 
 
+   
     for name, group in dataFrameAttributes.groupby('GEGEVENSVERZAMELING_ID'):
         recordDic={}
         recordDic["URI"] = os.path.join(uri_prefix,name) #<!-- for uri use {{ prefix }}{{ GEGEVENSVERZAMELING_ID }}, prefix is in a config file --> 
@@ -92,11 +94,15 @@ def main(args):
         dataDomainID = group["GEGEVENSDOMEIN_ID"].iat[0]
         dataCollectionID = group["GEGEVENSVERZAMELING_ID"].iat[0]
         
+        #Getting the BESCHRIJVING
+        featureDescription = dataFrameDataCollection[dataFrameDataCollection["GEGEVENSVERZAMELING_ID"]==name]["BESCHRIJVING"].iat[0]
+        
         fileName="FC:{}:{}:{}.xml".format(sourceDataID,dataDomainID,dataCollectionID)
         
         recordDic["GEGEVENSBRON_ID"] = sourceDataID
         recordDic["GEGEVENSDOMEIN_ID"] = dataDomainID
         recordDic["GEGEVENSVERZAMELING_ID"] = dataCollectionID
+        recordDic["BESCHRIJVING"] = featureDescription 
         recordDic["UUID"]=fileName[:-4]
         
         dataDomainRow = dataFrameDataDomain[dataFrameDataDomain["GEGEVENSDOMEIN_ID"].str.match(dataDomainID)]
@@ -128,12 +134,9 @@ def main(args):
                 else:
                     del recordDic["ATTRLIST"][index]["BEREIK"]
 
-            #    recordDic["ATTRLIST"][0]["BEREIK"]
-             #   print("Jumped {}".format(record["BEREIK"]))
-
-        
         
         recordDic = fixDate(recordDic)
+        
         xmlRecord = render(TEMPLATE_FILE, recordDic).encode(encoding='UTF-8')
         
         with open(os.path.join(OUTPUT_FOLDER,fileName),"wb") as f1:

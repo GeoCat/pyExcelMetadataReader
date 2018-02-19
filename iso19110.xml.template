@@ -57,7 +57,7 @@
             <gco:LocalName>{% if GEGEVENSDOMEIN_NAAM is defined %}{{ GEGEVENSDOMEIN_NAAM }}{% endif %}</gco:LocalName>
          </gfc:typeName>
          <gfc:definition>
-            <gco:CharacterString>{% if OMSCHRIJVING is defined %}{{ OMSCHRIJVING }}{% endif %}</gco:CharacterString>
+            <gco:CharacterString>{% if BESCHRIJVING is defined %}{{ BESCHRIJVING }}{% endif %}</gco:CharacterString>
          </gfc:definition>
          <gfc:isAbstract>
 				<gco:Boolean>false</gco:Boolean>
