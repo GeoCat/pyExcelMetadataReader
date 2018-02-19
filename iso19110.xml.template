@@ -9,13 +9,14 @@
                          uuid="{% if UUID is defined %}{{ UUID }}{% endif %}"
                          xsi:schemaLocation="http://www.isotc211.org/2005/gfc http://www.isotc211.org/2005/gfc/gfc.xsd">
   <gmx:name>
-      <gco:CharacterString>{% if GEGEVENSDOMEIN_NAAM is defined %}{{ GEGEVENSDOMEIN_NAAM }}{% endif %}
+      <gco:CharacterString>
+          FeatureCatalogus {% if GEGEVENSVERZAMELING_ID is defined %}{{ GEGEVENSVERZAMELING_ID }}{% endif %}
       </gco:CharacterString>
   </gmx:name>{% if GEGEVENS_BIJGEWERKT is defined %}
   <gmx:scope />
   <gmx:versionNumber />
   <gmx:versionDate>
-      <gco:Date>{{ GEGEVENS_BIJGEWERKT }}</gco:Date>
+      <gco:DateTime>{{ GEGEVENS_BIJGEWERKT }}T00:00:00</gco:DateTime>
   </gmx:versionDate>{% endif %}
   <gfc:producer>
       <gmd:CI_ResponsibleParty>
@@ -54,7 +55,7 @@
       <!-- Maybe only generate features that are complete -->
       <gfc:FC_FeatureType>
          <gfc:typeName>
-            <gco:LocalName>{% if GEGEVENSDOMEIN_NAAM is defined %}{{ GEGEVENSDOMEIN_NAAM }}{% endif %}</gco:LocalName>
+            <gco:LocalName>{% if GEGEVENSVERZAMELING_ID is defined %}{{ GEGEVENSVERZAMELING_ID }}{% endif %}</gco:LocalName>
          </gfc:typeName>
          <gfc:definition>
             <gco:CharacterString>{% if BESCHRIJVING is defined %}{{ BESCHRIJVING }}{% endif %}</gco:CharacterString>
@@ -63,7 +64,7 @@
 				<gco:Boolean>false</gco:Boolean>
 		</gfc:isAbstract>
          <gfc:code>
-            <gmx:Anchor xlink:href="{% if URI is defined %}{{ URI }}{% endif %}">{%if GEGEVENSDOMEIN_ID is defined %}{{ GEGEVENSDOMEIN_ID }}{% endif %}</gmx:Anchor>
+            <gmx:Anchor xlink:href="{% if URI is defined %}{{ URI }}{% endif %}">{%if GEGEVENSVERZAMELING_ID is defined %}{{ GEGEVENSVERZAMELING_ID }}{% endif %}</gmx:Anchor>
          </gfc:code>
          {% for ATTR in ATTRLIST %}
          

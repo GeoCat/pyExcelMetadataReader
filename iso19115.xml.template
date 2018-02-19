@@ -64,15 +64,15 @@
          <gmd:citation>
             <gmd:CI_Citation>
                <gmd:title>
-                  <gco:CharacterString>{% if TITLE is defined %}{{ TITEL }}{% endif %}</gco:CharacterString>
+                  <gco:CharacterString>{% if TITEL is defined %}{{ TITEL }}{% endif %}</gco:CharacterString>
                </gmd:title>{% if ALTERNATIEVE_TITEL is defined %}
                <gmd:alternateTitle>
                   <gco:CharacterString>{{ ALTERNATIEVE_TITEL }}</gco:CharacterString>
-               </gmd:alternateTitle>{% endif %}{% if ALTERNATIEVE_TITEL is defined %}
+               </gmd:alternateTitle>{% endif %}{% if CREATIEDATUM is defined %}
                <gmd:date>
                   <gmd:CI_Date>
                      <gmd:date>
-                        <gco:Date>{{ ALTERNATIEVE_TITEL }}</gco:Date> <!-- formatted as yyyy-mm-dd -->
+                        <gco:Date>{{ CREATIEDATUM }}</gco:Date> <!-- formatted as yyyy-mm-dd -->
                      </gmd:date>
                      <gmd:dateType>
                         <gmd:CI_DateTypeCode codeList="./resources/codeList.xml#CI_DateTypeCode" codeListValue="creation"/>
@@ -108,10 +108,10 @@
                   </gmd:MD_Identifier>
                </gmd:identifier>
         </gmd:CI_Citation>
-         </gmd:citation>{% if BESCHRIJVING is defined %}
+         </gmd:citation>
          <gmd:abstract>
-            <gco:CharacterString>{{ BESCHRIJVING }}</gco:CharacterString>
-         </gmd:abstract>{% endif %}{% if DOEL is defined %}
+            <gco:CharacterString>{% if BESCHRIJVING is defined %}{{ BESCHRIJVING }}{% endif %}</gco:CharacterString>
+         </gmd:abstract>{% if DOEL is defined %}
          <gmd:purpose>
             <gco:CharacterString>{{ DOEL }}</gco:CharacterString>
          </gmd:purpose>{% endif %}{% if STATUS is defined %}
@@ -163,7 +163,7 @@
          <gmd:graphicOverview>
             <gmd:MD_BrowseGraphic>
                <gmd:fileName>
-                  <gco:CharacterString>http://metadata.geodataoverijssel.nl:80/attachment/69020/archeologisch_monument.jpg</gco:CharacterString>
+                  <gco:CharacterString>https://www.provinciegroningen.nl/templates/provinciegroningen/assets/images/logo_provincie_groningen.png</gco:CharacterString>
                </gmd:fileName>
             </gmd:MD_BrowseGraphic>
          </gmd:graphicOverview>
@@ -173,15 +173,15 @@
                   <gco:CharacterString>{{ KEYWORD }}</gco:CharacterString>
                </gmd:keyword>{% endfor %}{% endif %} 
             </gmd:MD_Keywords>
-         </gmd:descriptiveKeywords>
+         </gmd:descriptiveKeywords>{% if CLASSIFICATIE is defined %}
          <gmd:resourceConstraints>
-            <gmd:MD_LegalConstraints>{% if CLASSIFICATIE is defined %}
+            <gmd:MD_LegalConstraints>
                <gmd:useConstraints>
                   <gmd:MD_RestrictionCode codeList="./resources/codeList.xml#MD_RestrictionCode"
-                                          codeListValue="{{ CLASSIFICATIE }}"/> <!-- mapping table for values -->{% endif %}
+                                          codeListValue="{{ CLASSIFICATIE }}"/> <!-- mapping table for values -->
                </gmd:useConstraints>
             </gmd:MD_LegalConstraints>
-         </gmd:resourceConstraints>
+         </gmd:resourceConstraints>{% endif %}
          <gmd:resourceConstraints>
             <gmd:MD_LegalConstraints>
                <gmd:accessConstraints>
@@ -295,7 +295,7 @@
          <gmd:lineage>
             <gmd:LI_Lineage>
                <gmd:statement>
-                  <gco:CharacterString>{{ herkomst }}</gco:CharacterString>
+                  <gco:CharacterString>Geimporteerd uit Oracle, aangevuld via Excel</gco:CharacterString>
                </gmd:statement>
             </gmd:LI_Lineage>
          </gmd:lineage>
