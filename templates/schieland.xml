@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd"
+                 xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xmlns:gml="http://www.opengis.net/gml"
+                 xmlns:gco="http://www.isotc211.org/2005/gco"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://www.isotc211.org/2005/gmd http://schemas.opengis.net/iso/19139/20060504/gmd/gmd.xsd">
+  <gmd:fileIdentifier>
+      <gco:CharacterString>NL:HHSK:{{ Code }}</gco:CharacterString>
+  </gmd:fileIdentifier>
+  <gmd:language>
+      <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="dut">Nederlands</gmd:LanguageCode>
+  </gmd:language>
+  <gmd:characterSet>
+      <gmd:MD_CharacterSetCode codeList="./resources/codeList.xml#MD_CharacterSetCode" codeListValue="utf8"/>
+  </gmd:characterSet>
+  <gmd:hierarchyLevel>
+      <gmd:MD_ScopeCode codeList="./resources/codeList.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
+  </gmd:hierarchyLevel>
+  <gmd:contact>
+      <gmd:CI_ResponsibleParty>{% if Gegevenseigenaar is defined %}  
+         <gmd:individualName>
+            <gco:CharacterString>{{ Gegevenseigenaar }}</gco:CharacterString>
+         </gmd:individualName>{% endif %}
+         <!-- Maasboulevard 123 | 3063 GK Rotterdam | Postbus 4059 | 3006 AB Rotterdam | Telefoon: 010 45 37 200 | E-mail: info@hhsk.nl
+          -->
+         <gmd:organisationName>
+            <gco:CharacterString>Hoogheemraadschap van Schieland en de Krimpenerwaard</gco:CharacterString>
+         </gmd:organisationName>
+         <gmd:positionName>
+            <gco:CharacterString>{{Functie}}</gco:CharacterString>
+         </gmd:positionName>
+         <gmd:contactInfo>
+            <gmd:CI_Contact>
+               <gmd:address>
+                  <gmd:CI_Address>
+                     <gmd:electronicMailAddress>
+                        <gco:CharacterString>info@hhsk.nl</gco:CharacterString>
+                     </gmd:electronicMailAddress>
+                  </gmd:CI_Address>
+               </gmd:address>
+            </gmd:CI_Contact>
+         </gmd:contactInfo>
+         <gmd:role>
+            <gmd:CI_RoleCode codeList="./resources/codeList.xml#CI_RoleCode" codeListValue="custodian"/>
+         </gmd:role>
+      </gmd:CI_ResponsibleParty>
+  </gmd:contact>
+  <gmd:dateStamp>
+      <gco:Date>{{today}}</gco:Date>
+  </gmd:dateStamp>
+  <gmd:metadataStandardName>
+      <gco:CharacterString>ISO 19115</gco:CharacterString>
+  </gmd:metadataStandardName>
+  <gmd:metadataStandardVersion>
+      <gco:CharacterString>Nederlandse metadata profiel op ISO 19115 voor geografie 1.3.1</gco:CharacterString>
+  </gmd:metadataStandardVersion>
+  <gmd:identificationInfo>
+      <gmd:MD_DataIdentification>
+         <gmd:citation>
+            <gmd:CI_Citation>
+               <gmd:title>
+                  <gco:CharacterString>{% if Naam is defined %}{{ Naam }}{% endif %}</gco:CharacterString>
+               </gmd:title>
+               
+               <gmd:date>
+                  <gmd:CI_Date>
+                     <gmd:date>
+                        <gco:Date>{{ today }}</gco:Date> <!-- formatted as yyyy-mm-dd -->
+                     </gmd:date>
+                     <gmd:dateType>
+                        <gmd:CI_DateTypeCode codeList="./resources/codeList.xml#CI_DateTypeCode" codeListValue="revision"/>
+                     </gmd:dateType>
+                  </gmd:CI_Date>
+               </gmd:date>
+               <gmd:identifier>
+                  <gmd:MD_Identifier>
+                     <gmd:code>
+                      <!-- PAS OP.use fileidentifier if empty-->
+                        <gco:CharacterString>{{ Code }}</gco:CharacterString> 
+                     </gmd:code>
+                  </gmd:MD_Identifier>
+               </gmd:identifier>
+        </gmd:CI_Citation>
+         </gmd:citation>
+         <gmd:abstract>
+            <gco:CharacterString>{% if Omschrijving is defined %}{{ Omschrijving }}{% endif %}</gco:CharacterString>
+         </gmd:abstract>
+         <gmd:pointOfContact>
+            <gmd:CI_ResponsibleParty>{% if Eigenaar_Vakafdeing is defined %}
+          <gmd:individualName>
+            <gco:CharacterString>{{ Eigenaar_Vakafdeing }}</gco:CharacterString>
+          </gmd:individualName>{% endif %}
+         <gmd:organisationName>
+            <gco:CharacterString>Hoogheemraadschap van Schieland en de Krimpenerwaard</gco:CharacterString>
+         </gmd:organisationName>
+         <gmd:positionName>
+            <gco:CharacterString>contactPoint</gco:CharacterString>
+         </gmd:positionName>
+         <gmd:contactInfo>
+            <gmd:CI_Contact>
+               <gmd:phone>
+               <gmd:address>
+                  <gmd:CI_Address>
+                     <gmd:electronicMailAddress>
+                        <gco:CharacterString>info@hhsk.nl</gco:CharacterString>
+                     </gmd:electronicMailAddress>
+                  </gmd:CI_Address>
+               </gmd:address>
+            </gmd:CI_Contact>
+         </gmd:contactInfo>
+         <gmd:role>
+            <gmd:CI_RoleCode codeList="./resources/codeList.xml#CI_RoleCode" codeListValue="custodian"/>
+         </gmd:role>
+         </gmd:CI_ResponsibleParty>
+      </gmd:pointOfContact>
+        
+         <gmd:graphicOverview>
+            <gmd:MD_BrowseGraphic>
+               <gmd:fileName>
+                  <gco:CharacterString>https://www.schielandendekrimpenerwaard.nl/++theme++drogevoeten.base/images/logo_hhsk.jpg</gco:CharacterString>
+               </gmd:fileName>
+            </gmd:MD_BrowseGraphic>
+         </gmd:graphicOverview>
+         <gmd:descriptiveKeywords>
+            <gmd:MD_Keywords>
+               <gmd:keyword>
+                  <gco:CharacterString></gco:CharacterString>
+               </gmd:keyword>
+            </gmd:MD_Keywords>
+         </gmd:descriptiveKeywords>{% if CLASSIFICATIE is defined %}
+         <gmd:resourceConstraints>
+            <gmd:MD_LegalConstraints>
+               <gmd:useConstraints>
+                  <gmd:MD_RestrictionCode codeList="./resources/codeList.xml#MD_RestrictionCode"
+                                          codeListValue="{{ CLASSIFICATIE }}"/> <!-- mapping table for values -->
+               </gmd:useConstraints>
+            </gmd:MD_LegalConstraints>
+         </gmd:resourceConstraints>{% endif %}
+         <gmd:resourceConstraints>
+            <gmd:MD_LegalConstraints>
+               <gmd:accessConstraints>
+                  <gmd:MD_RestrictionCode codeList="./resources/codeList.xml#MD_RestrictionCode"
+                                          codeListValue="otherRestrictions"/>
+               </gmd:accessConstraints>{% if LICENTIE is defined %}
+               <gmd:otherConstraints>
+               <gco:CharacterString>
+               {{ LICENTIE }}
+               </gco:CharacterString>
+               </gmd:otherConstraints>{% endif %}{% if URI_LICENTIE %}
+               <gmd:otherConstraints>
+               <gco:CharacterString>{{ URI_LICENTIE }}</gco:CharacterString>
+               </gmd:otherConstraints>{% endif %}
+            </gmd:MD_LegalConstraints>
+         </gmd:resourceConstraints>
+         <gmd:language>
+            <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="dut">Nederlands</gmd:LanguageCode>
+         </gmd:language>
+         <gmd:characterSet>
+            <!-- utf8 if empty -->{% if KARAKTERSET is defined %}
+            <gmd:MD_CharacterSetCode codeList="./resources/codeList.xml#MD_CharacterSetCode" codeListValue="{{ KARAKTERSET }}"/> {% endif %}
+         </gmd:characterSet>{% if THEMA is defined %}
+         <gmd:topicCategory>
+         <!-- Thema:{'farming', 'biota', 'boundaries', 
+         'climatologyMeteorologyAtmosphere', 'economy', 
+         'elevation', 'environment', 'geoscientificInformation', 'health', 'imageryBaseMapsEarthCover', 'intelligenceMilitary', 'inlandWaters', 'location', 'oceans', 'planningCadastre', 'society', 'structure', 'transportation', 'utilitiesCommunication'} -->
+            <gmd:MD_TopicCategoryCode>{{ THEMA }}</gmd:MD_TopicCategoryCode> <!-- provide a mapping table for thema to topiccat -->
+         </gmd:topicCategory>{% endif %}
+         <gmd:extent>
+            <gmd:EX_Extent>
+               <!-- PAS OS! Coordinates need to be properly processed -->{% if OMGRENZENDE_DRIEHOEK is defined %}
+               <gmd:geographicElement>
+                  <gmd:EX_GeographicBoundingBox>
+                     <gmd:westBoundLongitude>
+                        <gco:Decimal>{{ OMGRENZENDE_DRIEHOEK,1 }}</gco:Decimal>
+                     </gmd:westBoundLongitude>
+                     <gmd:eastBoundLongitude>
+                        <gco:Decimal>{{ OMGRENZENDE_DRIEHOEK,2 }}</gco:Decimal>
+                     </gmd:eastBoundLongitude>
+                     <gmd:southBoundLatitude>
+                        <gco:Decimal>{{ OMGRENZENDE_DRIEHOEK,3 }}</gco:Decimal>
+                     </gmd:southBoundLatitude>
+                     <gmd:northBoundLatitude>
+                        <gco:Decimal>{{ OMGRENZENDE_DRIEHOEK,4 }}</gco:Decimal>
+                     </gmd:northBoundLatitude>
+                  </gmd:EX_GeographicBoundingBox>
+               </gmd:geographicElement>{% endif %}{% if LOCATIE is defined %}
+               <gmd:geographicElement>
+                  <gmd:EX_GeographicDescription>
+                     <gmd:geographicIdentifier>
+                        <gmd:MD_Identifier>
+                           <gmd:code>
+                              <gco:CharacterString>{{ LOCATIE }}</gco:CharacterString>
+                           </gmd:code>
+                        </gmd:MD_Identifier>
+                     </gmd:geographicIdentifier>
+                  </gmd:EX_GeographicDescription>
+               </gmd:geographicElement>{% endif %}{% if (STARTDATUM_DATASET is defined) or (EINDDATUM_DATASET is defined) %}
+               <gmd:temporalElement>
+                  <gmd:EX_TemporalExtent>
+                     <gmd:extent>
+                        <gml:TimePeriod gml:id="tp1">
+                          <gml:beginPosition>{% if STARTDATUM_DATASET is defined %}{{ STARTDATUM_DATASET }}T00:00:00{% endif %}</gml:beginPosition>
+                          <gml:endPosition>{% if STARTDATUM_DATASET is defined %}{{ EINDDATUM_DATASET }}T00:00:00{% endif %}</gml:endPosition>
+                        </gml:TimePeriod>
+                     </gmd:extent>
+                  </gmd:EX_TemporalExtent>
+               </gmd:temporalElement>{% endif %}
+            </gmd:EX_Extent>
+         </gmd:extent>
+      </gmd:MD_DataIdentification>
+  </gmd:identificationInfo>
+  <gmd:contentInfo>{% if FCID is defined %}
+      <gmd:MD_FeatureCatalogueDescription>
+         <gmd:featureCatalogueCitation uuidref="{{ FCID }}"
+                                       xlink:href="{{ XLINK__HREF }}?service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full&amp;id={{ FCID }}"/>
+        </gmd:MD_FeatureCatalogueDescription>{% endif %}
+   </gmd:contentInfo>
+  <gmd:distributionInfo>
+     <gmd:MD_Distribution>
+         <gmd:distributionFormat>
+            <gmd:MD_Format>
+            <gmd:name>
+            <gco:CharacterString>Oracle</gco:CharacterString>
+            </gmd:name>
+            </gmd:MD_Format>  
+         </gmd:distributionFormat>{% if Database is defined %}      
+            <gmd:transferOptions>
+            <gmd:MD_DigitalTransferOptions>
+            <gmd:onLine>
+               <gmd:CI_OnlineResource>
+               <gmd:linkage>
+               <gmd:URL>{{ Database }}</gmd:URL>
+               </gmd:linkage>
+               </gmd:CI_OnlineResource>
+            </gmd:onLine>
+            </gmd:MD_DigitalTransferOptions>
+            </gmd:transferOptions>{% endif %}
+     </gmd:MD_Distribution>
+  </gmd:distributionInfo>
+  <gmd:dataQualityInfo>
+      <gmd:DQ_DataQuality>
+         <gmd:scope>
+            <gmd:DQ_Scope>
+               <gmd:level>
+                  <gmd:MD_ScopeCode codeList="./resources/codeList.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
+               </gmd:level>
+            </gmd:DQ_Scope>
+         </gmd:scope>
+         <gmd:lineage>
+            <gmd:LI_Lineage>
+               <gmd:statement>
+                  <gco:CharacterString>{{ Lineage }}</gco:CharacterString>
+               </gmd:statement>
+            </gmd:LI_Lineage>
+         </gmd:lineage>
+      </gmd:DQ_DataQuality>
+  </gmd:dataQualityInfo>
+</gmd:MD_Metadata>

@@ -148,7 +148,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = __summary__)    
     #File location
     parser.add_argument('--excelsheet',dest="inputexcel", type=argparse.FileType('r', encoding='UTF-8'), 
-                            required=False,  default="POC testdata Metadatregister Rittenstaat.xlsx", help="Excel file/path with data") 
+                            required=False,  default="./data/POC testdata Metadatregister Rittenstaat.xlsx", help="Excel file/path with data") 
     #Directory 
     parser.add_argument('--outdir',dest="outdir", required=False,  default="./output", 
                             help="Directory path that will contain the XML", type=is_dir) 
