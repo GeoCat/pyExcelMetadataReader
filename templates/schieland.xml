@@ -18,9 +18,9 @@
       <gmd:MD_ScopeCode codeList="./resources/codeList.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
   </gmd:hierarchyLevel>
   <gmd:contact>
-      <gmd:CI_ResponsibleParty>{% if Gegevenseigenaar is defined %}  
+      <gmd:CI_ResponsibleParty>{% if Geobeheerder is defined %}  
          <gmd:individualName>
-            <gco:CharacterString>{{ Gegevenseigenaar }}</gco:CharacterString>
+            <gco:CharacterString>{{ Geobeheerder }}</gco:CharacterString>
          </gmd:individualName>{% endif %}
          <!-- Maasboulevard 123 | 3063 GK Rotterdam | Postbus 4059 | 3006 AB Rotterdam | Telefoon: 010 45 37 200 | E-mail: info@hhsk.nl
           -->
@@ -28,7 +28,7 @@
             <gco:CharacterString>Hoogheemraadschap van Schieland en de Krimpenerwaard</gco:CharacterString>
          </gmd:organisationName>
          <gmd:positionName>
-            <gco:CharacterString>{{Functie}}</gco:CharacterString>
+            <gco:CharacterString>contactPoint</gco:CharacterString>
          </gmd:positionName>
          <gmd:contactInfo>
             <gmd:CI_Contact>
@@ -86,16 +86,26 @@
          <gmd:abstract>
             <gco:CharacterString>{% if Omschrijving is defined %}{{ Omschrijving }}{% endif %}</gco:CharacterString>
          </gmd:abstract>
+         <gmd:status>
+            <gmd:MD_ProgressCode codeListValue="onGoing"
+                                 codeList="http://www.isotc211.org/2005/resources/codeList.xml#MD_ProgressCode">
+                                   {{ Leeftijdsnorminformatie }}
+                                 </gmd:MD_ProgressCode>
+         </gmd:status>
+         <gmd:purpose>
+            <gco:CharacterString>
+              {{ TAAK }}
+            </gco:CharacterString></gmd:purpose>
          <gmd:pointOfContact>
-            <gmd:CI_ResponsibleParty>{% if Eigenaar_Vakafdeing is defined %}
+            <gmd:CI_ResponsibleParty>{% if Gegevenseigenaar is defined %}
           <gmd:individualName>
-            <gco:CharacterString>{{ Eigenaar_Vakafdeing }}</gco:CharacterString>
+            <gco:CharacterString>{{ Gegevenseigenaar }}</gco:CharacterString>
           </gmd:individualName>{% endif %}
          <gmd:organisationName>
             <gco:CharacterString>Hoogheemraadschap van Schieland en de Krimpenerwaard</gco:CharacterString>
          </gmd:organisationName>
          <gmd:positionName>
-            <gco:CharacterString>contactPoint</gco:CharacterString>
+            <gco:CharacterString>{{ AfdelingFunctieEigenaar }}</gco:CharacterString>
          </gmd:positionName>
          <gmd:contactInfo>
             <gmd:CI_Contact>
@@ -154,9 +164,29 @@
                </gmd:otherConstraints>{% endif %}
             </gmd:MD_LegalConstraints>
          </gmd:resourceConstraints>
+         <gmd:spatialRepresentationType>
+          <!-- if raster > raster else vector -->
+            <gmd:MD_SpatialRepresentationTypeCode codeListValue="{% 
+              if GRAFISCH == 'raster' %}grid{% else %}vector{% endif %}"
+              codeList="http://www.isotc211.org/2005/resources/codeList.xml#MD_SpatialRepresentationTypeCode">
+                {{ GRAFISCH }}
+              </gmd:MD_SpatialRepresentationTypeCode>
+         </gmd:spatialRepresentationType>
+         <gmd:spatialResolution>
+            <gmd:MD_Resolution>
+               <gmd:equivalentScale>
+                  <gmd:MD_RepresentativeFraction>
+                     <gmd:denominator>
+                        <gco:Integer>{{ KWALITEITSNORMTOPO }}</gco:Integer>
+                     </gmd:denominator>
+                  </gmd:MD_RepresentativeFraction>
+               </gmd:equivalentScale>
+            </gmd:MD_Resolution>
+         </gmd:spatialResolution>
          <gmd:language>
             <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="dut">Nederlands</gmd:LanguageCode>
          </gmd:language>
+
          <gmd:characterSet>
             <!-- utf8 if empty -->{% if KARAKTERSET is defined %}
             <gmd:MD_CharacterSetCode codeList="./resources/codeList.xml#MD_CharacterSetCode" codeListValue="{{ KARAKTERSET }}"/> {% endif %}
@@ -209,6 +239,9 @@
                </gmd:temporalElement>{% endif %}
             </gmd:EX_Extent>
          </gmd:extent>
+         <gmd:supplementalInformation>
+            <gco:CharacterString>{{DEFINITIEAQUO}} {{OBJECTAFBAKENING}} {{OPMERKINGEN}}</gco:CharacterString>
+         </gmd:supplementalInformation>
       </gmd:MD_DataIdentification>
   </gmd:identificationInfo>
   <gmd:contentInfo>{% if FCID is defined %}
