@@ -99,7 +99,6 @@ def main(sqlitedb,outputdir,template):
     table_gegevens = sqlite_connector.get_table("factsheet")
     for row in table_gegevens:
         row = dict(row)
-        print(row.get("Code",None))
         
         file_name = get_filename(row)
         # if code is none then set a uuuid and use it as file identifer

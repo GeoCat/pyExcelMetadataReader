@@ -137,6 +137,7 @@
                </gmd:useConstraints>
             </gmd:MD_LegalConstraints>
          </gmd:resourceConstraints>{% endif %}
+         
          <gmd:resourceConstraints>
             <gmd:MD_LegalConstraints>
                <gmd:accessConstraints>
