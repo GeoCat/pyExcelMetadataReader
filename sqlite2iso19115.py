@@ -18,6 +18,7 @@ import sys,os
 import jinja2
 import datetime
 import uuid
+from collections import OrderedDict
 # Dictionary with generic provider info 
 global_provider_info = {
     "organization": "schieland en de Krimpenerwaard",
@@ -100,25 +101,41 @@ class SQliteConnector():
         return result.fetchall()
     
     def get_attr_data(self,code):
-        """Gets the row from the table attr
+        """Gets the row from the table attr and make an attribute dictionary with list of attributes
         
         :returns: list || None
         """
         #column_list = (Eenh1,Attribuut1,Omschrijving1)
          
-        column_list = [("Eenh"+str(n),"Attribuut"+str(n),"Omschrijving"+str(n)) for n in range(0,8)]
-        column_string =[]
+        column_list = [("Attribuut"+str(n),"Omschrijving"+str(n),"Eenh"+str(n)) for n in range(1,21)] #[('Attribuut1', 'Omschrijving1', 'Eenh1'), ('Attribuut2', 'Omschrijving2', 'Eenh2'), ('Attribuut3', 'Omschrijving3', 'Eenh3'), ('Attribuut4', 'Omschrijving4', 'Eenh4'), ('Attribuut5', 'Omschrijving5', 'Eenh5'), 
+        column_string = []
         [[column_string.append(x) for x in y] for y in column_list]
         column_string = ",".join(column_string)
-        
-        
+        sql = "select {} from factsheet where code=?".format(column_string)
+        result = self.cursor.execute(sql,(code,))
+        result = result.fetchall()
+        #Assuming only one result:
         try:
-            result = self.cursor.execute("select  from attr where code=?",(code,))    
+            result = result[0]
+            result = dict(result)
         except Exception as e:
             print(e)
             return None
+        tmp=[]
+        #deserialize into a dictorary
+        for attr_tuple in column_list:
+            tmp.append({attr_tuple[0]:result[attr_tuple[0]]})
+             
+        print(tmp)
+        #print(set(result))
         
-        return result.fetchall()
+        #try:
+        #    result = self.cursor.execute("select  from attr where code=?",(code,))    
+        #except Exception as e:
+        #    print(e)
+        #    return None
+        
+        #return result.fetchall()
         
         
 #./data/Schieland.sqlite
@@ -157,12 +174,16 @@ def main(sqlitedb,outputdir,template_metadata,template_fc):
             print(row_metadata["Code"])
             row_fc = sqlite_connector.get_fc_data(row_metadata["Code"]) 
             row_fc_attr = sqlite_connector.get_attr_data(row_metadata["Code"]) #{'code': 'WS01_F', 'attr': 'Code', 'unit': 'OWA-XXX', 'desc': 'Unieke code'}
+            
+            
+            print(row_fc_attr)
+            1/0
             #Assuming that row_fc
             if row_fc:
                 row_fc = dict(row_fc[0])
-            if  row_fc_attr:
-                row_fc["ATTRLIST"] = [dict(item) for item in row_fc_attr] 
-            print(row_fc["ATTRLIST"])    
+           # if  row_fc_attr:
+           #     row_fc["ATTRLIST"] = [dict(item) for item in row_fc_attr] 
+           # print(row_fc["ATTRLIST"])    
                 
             #print(dict(row_fc[0])) 
             
