@@ -4,7 +4,6 @@
 from uuid import uuid4
 
 
-
 __title__      = 'Sqlite3 iso 19115 converter'
 __summary__    = """sqlite converter to iso 19115. Data table in 'Factsheet' will be converted to XML stored in an output folder (need to be created first)"""
 __author__     = 'Jorge Samuel Mendes de Jesus'
@@ -19,6 +18,14 @@ import sys,os
 import jinja2
 import datetime
 import uuid
+# Dictionary with generic provider info 
+global_provider_info = {
+    "organization": "schieland en de Krimpenerwaard",
+    "email": "info@hhsk.nl",
+    "telefon": "010 45 37 200",
+    "fax" : "010 45 37 200",    
+}
+
 
 def render(tpl_path, context):
     """Jinja2 render function"""
@@ -66,20 +73,61 @@ class SQliteConnector():
         self.cursor = conn.cursor()
 
     def get_table(self,table):
-        """Gets a specific table"""
+        """Gets a specific table
+        
+        :returns: list || None
+        
+        """
         try:
             result = self.cursor.execute("select * from {};".format(table))
         except:
             print("table not found")
             return None
         
-        return result.fetchall()    
-            
+        return result.fetchall()
+    
+    def get_fc_data(self,code):
+        """Gets the row from the table factsheewt
+        
+        :returns: list || None
+        """
+        try:
+            result = self.cursor.execute("select * from factsheet where code=?",(code,))    
+        except Exception as e:
+            print(e)
+            return None
+        
+        return result.fetchall()
+    
+    def get_attr_data(self,code):
+        """Gets the row from the table attr
+        
+        :returns: list || None
+        """
+        #column_list = (Eenh1,Attribuut1,Omschrijving1)
+         
+        column_list = [("Eenh"+str(n),"Attribuut"+str(n),"Omschrijving"+str(n)) for n in range(0,8)]
+        column_string =[]
+        [[column_string.append(x) for x in y] for y in column_list]
+        column_string = ",".join(column_string)
+        
+        
+        try:
+            result = self.cursor.execute("select  from attr where code=?",(code,))    
+        except Exception as e:
+            print(e)
+            return None
+        
+        return result.fetchall()
+        
         
 #./data/Schieland.sqlite
 
 def get_filename(row):
-    """Makes a filename based on code content in row, otherwise returns a uuid"""
+    """Makes a filename based on code content in row, otherwise returns a uuid
+    
+    :returns: string
+    """
     if row.get("Code",None) is None:
         return uuid.uuid4()+".xml"
     else:
@@ -90,25 +138,46 @@ def get_filename(row):
 @click.command()
 @click.option('--sqlitedb',nargs=1,default = "./data/Schieland.sqlite", type=click.Path(exists=True),required=True,help='SQlite file location')
 @click.option('--outputdir',nargs=1,default = "./output",type=click.Path(exists=True),required=True,help='Output dir')
-@click.option('--template',default = "./templates/schieland.xml" ,nargs=1,type=click.Path(exists=True),help="iso 19115 Template to use")
-def main(sqlitedb,outputdir,template):
-    
+@click.option('--template-metadata',default = "./templates/iso19115_schieland.xml.template" ,nargs=1,type=click.Path(exists=True),help="iso 19115 Template to use")
+@click.option('--template-fc',default = "./templates/iso19110_schieland.xml.template" ,nargs=1,type=click.Path(exists=True),help="iso 19115 Template to use")
+def main(sqlitedb,outputdir,template_metadata,template_fc):
     """Main function that calls all the code """
 
     sqlite_connector = SQliteConnector(sqlitedb)
-    table_gegevens = sqlite_connector.get_table("factsheet")
-    for row in table_gegevens:
-        row = dict(row)
+    table_gegevens = sqlite_connector.get_table("Gegevens")
+    
+
+    for row_metadata in table_gegevens:
+        row_metadata = dict(row_metadata)
         
-        file_name = get_filename(row)
+        file_name = get_filename(row_metadata)
         # if code is none then set a uuuid and use it as file identifer
-        if not row.get("Code", None):
-            row["Code"] = uuid.uuid4()
+        
+        if row_metadata.get("Code",None):
+            print(row_metadata["Code"])
+            row_fc = sqlite_connector.get_fc_data(row_metadata["Code"]) 
+            row_fc_attr = sqlite_connector.get_attr_data(row_metadata["Code"]) #{'code': 'WS01_F', 'attr': 'Code', 'unit': 'OWA-XXX', 'desc': 'Unieke code'}
+            #Assuming that row_fc
+            if row_fc:
+                row_fc = dict(row_fc[0])
+            if  row_fc_attr:
+                row_fc["ATTRLIST"] = [dict(item) for item in row_fc_attr] 
+            print(row_fc["ATTRLIST"])    
+                
+            #print(dict(row_fc[0])) 
+            
+        else:
+            row_metadata["Code"] = uuid.uuid4()
         
         
-        file_name = row["Code"] + ".xml"
+        file_name_metadata = row_metadata["Code"] + ".xml"
+        file_name_feature = row_metadata["Code"] + "_FC.xml"
+        
         #YYYY-MM-DD is accepted dateformat in the ISO
-        row["today"] = datetime.date.today().isoformat()
+        row_metadata["today"] = datetime.date.today().isoformat()
+        row_fc["today"] = row_metadata["today"]
+        #TODO
+        #ATTRLIST
         
         #PASOP! EigenaarVakafdeling is in factsheet
         #PASOP! CLASSIFICATIE is missing from all the tables
@@ -123,9 +192,15 @@ def main(sqlitedb,outputdir,template):
         #<gmd:URL>{{ Database }}</gmd:URL> ??? databaseobject?? HHSK.PZ01_Beheergebieden
         
         
-        xml_record = render(template, row).encode(encoding='UTF-8')
-        with open(os.path.join(outputdir,file_name),"wb") as f1:
-            f1.write(xml_record)
+        metadata_record = render(template_metadata, {**row_metadata,**global_provider_info} ).encode(encoding='UTF-8')
+        with open(os.path.join(outputdir,file_name_metadata),"wb") as f1:
+            f1.write(metadata_record)
+        
+        
+        feature_record = render(template_fc,{**row_fc,**global_provider_info}).encode(encoding="UTF-8")
+        with open(os.path.join(outputdir,file_name_feature),"wb") as f2:
+            f2.write(feature_record)
+        
         break
     print("Done")
         
