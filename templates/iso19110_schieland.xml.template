@@ -71,11 +71,10 @@
             <gfc:FC_FeatureAttribute>
                <gfc:featureType/>
                <gfc:memberName>
-               #{'code': 'WS01_F', 'attr': 'Code', 'unit': 'OWA-XXX', 'desc': 'Unieke code'}
-                  <gco:LocalName>{% if  ATTR. is defined %}{{ ATTR.NAAM }}{% endif %}</gco:LocalName>
+                  <gco:LocalName>{% if  ATTR.attr is defined %}{{ ATTR.attr }}{% endif %}</gco:LocalName>
                </gfc:memberName>
                <gfc:definition>
-                  <gco:CharacterString>{% if ATTR.DEFINITIE is defined %}{{ ATTR.DEFINITIE }}{% endif %}</gco:CharacterString>
+                  <gco:CharacterString>{% if ATTR.desc is defined %}{{ ATTR.desc }}{% endif %}</gco:CharacterString>
                </gfc:definition>
                <gfc:cardinality>
                   <gco:Multiplicity>
