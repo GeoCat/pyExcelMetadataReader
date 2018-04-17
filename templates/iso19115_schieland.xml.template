@@ -18,7 +18,7 @@
       <gmd:MD_ScopeCode codeList="./resources/codeList.xml#MD_ScopeCode" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
   </gmd:hierarchyLevel>
   <gmd:contact>
-      <gmd:CI_ResponsibleParty>{% if EigenaarVakafdeling is defined %}  
+      <gmd:CI_ResponsibleParty>{% if Geobeheerder is defined %}  
          <gmd:individualName>
             <gco:CharacterString>{{ EigenaarVakafdeling }}</gco:CharacterString>
          </gmd:individualName>{% endif %}
